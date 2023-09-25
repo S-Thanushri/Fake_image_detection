@@ -5,7 +5,7 @@ from tensorflow.keras.preprocessing import image
 from PIL import Image
 
 # Load the trained fake image detection model
-model = load_model("C:\\Users\\mukes\\OneDrive\\Documents\\Moonraft\\fake_image_detection_model.h5")
+model = load_model("path of the model")
 
 # Define image dimensions
 img_height, img_width = 128, 128

@@ -7,15 +7,12 @@ from tensorflow.keras.layers import Conv2D, MaxPooling2D, Flatten, Dense, Dropou
 from PIL import Image
 import matplotlib.pyplot as plt
 
-# Specify your directory paths
 genuine_data_dir = "path to real images"
 fake_data_dir = "path to fake images"
 
-# Image dimensions and other parameters
 img_height, img_width = 128, 128
 batch_size = 32
 
-# Filter supported image formats (JPEG, PNG)
 supported_formats = ['.jpg', '.jpeg', '.png']
 
 def filter_supported_images(directory):
@@ -26,26 +23,20 @@ def filter_supported_images(directory):
                 image_files.append(os.path.join(root, file))
     return image_files
 
-# Filter and load genuine images
 genuine_image_files = filter_supported_images(genuine_data_dir)
 
-# Convert TIF files to JPEG (if needed)
 for tif_file in [file for file in genuine_image_files if file.lower().endswith('.tif')]:
     jpeg_output_path = os.path.splitext(tif_file)[0] + '.jpg'
     image = Image.open(tif_file)
     image.save(jpeg_output_path, 'JPEG')
 
-# Filter and load fake images
 fake_image_files = filter_supported_images(fake_data_dir)
 
-# Create DataFrames for genuine and fake images
 genuine_df = pd.DataFrame({'filename': genuine_image_files, 'label': 'genuine'})  # Use text labels
 fake_df = pd.DataFrame({'filename': fake_image_files, 'label': 'fake'})  # Use text labels
 
-# Concatenate the DataFrames
 data_df = pd.concat([genuine_df, fake_df], ignore_index=True)
 
-# Data augmentation for training data
 train_datagen = ImageDataGenerator(
     rescale=1.0/255.0,
     rotation_range=20,
@@ -55,7 +46,6 @@ train_datagen = ImageDataGenerator(
     validation_split=0.2  # Split 20% of data for validation
 )
 
-# Use flow_from_dataframe to load and preprocess the dataset for genuine images
 train_generator = train_datagen.flow_from_dataframe(
     dataframe=data_df,
     x_col='filename',
@@ -76,7 +66,6 @@ validation_generator = train_datagen.flow_from_dataframe(
     subset='validation'  # Specify validation subset
 )
 
-# Custom data generator for fake images
 def fake_image_data_generator(df, batch_size, img_height, img_width):
     while True:
         fake_samples = df.sample(batch_size)
@@ -92,10 +81,8 @@ def fake_image_data_generator(df, batch_size, img_height, img_width):
         
         yield x, y
 
-# Create a generator for fake images
 fake_generator = fake_image_data_generator(data_df[data_df['label'] == 'fake'], batch_size, img_height, img_width)
 
-# Define the model
 model = Sequential([
     Conv2D(32, (3, 3), activation='relu', input_shape=(img_height, img_width, 3)),
     MaxPooling2D((2, 2)),

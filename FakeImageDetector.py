@@ -8,8 +8,8 @@ from PIL import Image
 import matplotlib.pyplot as plt
 
 # Specify your directory paths
-genuine_data_dir = "C:\\Users\\mukes\\Downloads\\CASIA v2.0\\CASIA2\\Au"
-fake_data_dir = "C:\\Users\\mukes\\Downloads\\CASIA v2.0\\CASIA2\\Tp"
+genuine_data_dir = "path to real images"
+fake_data_dir = "path to fake images"
 
 # Image dimensions and other parameters
 img_height, img_width = 128, 128
@@ -116,7 +116,7 @@ model.compile(optimizer='adam',
 model.summary()
 
 # Train the model
-epochs = 10
+epochs = 50
 
 history = model.fit(
     train_generator,
